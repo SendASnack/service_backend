@@ -20,7 +20,10 @@ jobs:
     machine: true
     steps:
       - checkout
-      - run: cd service_backend
+      - run: 
+          command: |
+            ls
+            cd service_backend
       - run: mvn verify
       - run:
           name: Save test results
