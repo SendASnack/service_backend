@@ -5,6 +5,7 @@ jobs:
     machine: true
     steps:
       - checkout
+      - run: cd service_backend
       - run: mvn package -Dmaven.test.skip=true
       - run:
           name: Copy JAR file
@@ -19,6 +20,7 @@ jobs:
     machine: true
     steps:
       - checkout
+      - run: cd service_backend
       - run: mvn verify
       - run:
           name: Save test results
