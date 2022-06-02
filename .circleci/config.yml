@@ -22,8 +22,7 @@ jobs:
       - checkout
       - run: 
           command: |
-            ls
-            cd service_backend
+            cd ./service_backend
       - run: mvn verify
       - run:
           name: Save test results
