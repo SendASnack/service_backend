@@ -23,6 +23,7 @@ jobs:
       - run: 
           command: |
             cd ./service_backend
+            ls
       - run: mvn verify
       - run:
           name: Save test results
