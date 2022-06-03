@@ -28,7 +28,7 @@ public class ProtectedController {
     public ProfileRequest getProfile(HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         User res = userService.findByUsername(principal.getName());
-        return new ProfileRequest(res.getName(), res.getEmail());
+        return new ProfileRequest(res.getName(), res.getEmail(), res.getPhoneNumber());
     }
 
     
