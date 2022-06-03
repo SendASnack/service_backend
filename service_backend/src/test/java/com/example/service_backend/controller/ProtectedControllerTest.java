@@ -19,21 +19,20 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import com.example.service_backend.dao.UserDAO;
 import com.example.service_backend.exception.ErrorDetails;
-import com.example.service_backend.model.User;
+import com.example.service_backend.requests.ProfileRequest;
 import com.example.service_backend.requests.LoginRequest;
 import com.example.service_backend.requests.MessageResponse;
 import com.example.service_backend.security.auth.AuthTokenResponse;
 import com.example.service_backend.services.UserService;
 
 import java.time.Duration;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @DirtiesContext
-class AuthControllerTest {
+public class ProtectedControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -72,75 +71,35 @@ class AuthControllerTest {
     }
 
     @Test
-    @DisplayName("Register new user")
-    void registerUser() {
+    @DisplayName("Get profile with no user authenticathed")
+    void informationFromNonAuthenticathedUser() {
 
-        ResponseEntity<MessageResponse> response = restTemplate.postForEntity("/api/auth/register", userDAO, MessageResponse.class);
+        ResponseEntity<ErrorDetails> response = restTemplate.getForEntity("/api/profile", ErrorDetails.class);
+        ErrorDetails errorDetailsResponse = response.getBody();
 
-        List<User> users = userService.getAllUsers();
-
-        assertThat(userService.findByUsername(userDAO.getUsername())).isNotNull();
-        assertThat(users).hasSize(1).doesNotContainNull();
-
-        assertThat(users).extracting(User::getUsername).containsOnly(userDAO.getUsername());
-        assertThat(users).extracting(User::getEmail).containsOnly(userDAO.getEmail());
-        assertThat(users).extracting(User::getName).containsOnly(userDAO.getName());
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).extracting(MessageResponse::getMessage).isEqualTo("The user was successfully registered!");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(errorDetailsResponse).isNotNull();
+        assertThat(errorDetailsResponse).extracting(ErrorDetails::getTimestamp).isNotNull();
+        assertThat(errorDetailsResponse).extracting(ErrorDetails::getMessage).isEqualTo("Full authentication is required to access this resource");
 
     }
 
     @Test
-    @DisplayName("Login with correct credentials")
-    void loginUser() {
+    @DisplayName("Get profile with user authenticathed")
+    void informationFromAuthenticathedUser() {
 
         restTemplate.postForEntity("/api/auth/register", userDAO, MessageResponse.class);
 
         LoginRequest loginRequest = new LoginRequest(userDAO.getEmail(), userDAO.getPassword());
 
         ResponseEntity<AuthTokenResponse> response = restTemplate.postForEntity("/api/auth/login", loginRequest, AuthTokenResponse.class);
-        AuthTokenResponse authTokenResponse = response.getBody();
+
+        ResponseEntity<ProfileRequest> response2 = restTemplate.getForEntity("/api/profile",ProfileRequest.class);
+        ProfileRequest profileResponse = response2.getBody();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(authTokenResponse).isNotNull();
-        assertThat(authTokenResponse).extracting(AuthTokenResponse::getToken).isNotNull();
-        assertThat(authTokenResponse).extracting(AuthTokenResponse::getMessage).isEqualTo("Authentication succeeded.");
+        assertThat(profileResponse).isNotNull();
 
     }
-
-    @Test
-    @DisplayName("Login with wrong credentials")
-    void loginWithWrongCredentials() {
-
-        restTemplate.postForEntity("/api/auth/register", userDAO, MessageResponse.class);
-
-        LoginRequest loginRequest = new LoginRequest(userDAO.getEmail(), "wrong_password");
-
-        ResponseEntity<ErrorDetails> response = restTemplate.postForEntity("/api/auth/login", loginRequest, ErrorDetails.class);
-        ErrorDetails errorDetailsResponse = response.getBody();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(errorDetailsResponse).isNotNull();
-        assertThat(errorDetailsResponse).extracting(ErrorDetails::getTimestamp).isNotNull();
-        assertThat(errorDetailsResponse).extracting(ErrorDetails::getMessage).isEqualTo("The provided password is wrong.");
-
-    }
-
-    @Test
-    @DisplayName("Login with wrong body request")
-    void loginWithWrongBodyRequest() {
-
-        LoginRequest loginRequest = new LoginRequest(null, null);
-
-        ResponseEntity<ErrorDetails> response = restTemplate.postForEntity("/api/auth/login", loginRequest, ErrorDetails.class);
-        ErrorDetails errorDetailsResponse = response.getBody();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(errorDetailsResponse).isNotNull();
-        assertThat(errorDetailsResponse).extracting(ErrorDetails::getTimestamp).isNotNull();
-        assertThat(errorDetailsResponse).extracting(ErrorDetails::getMessage).isEqualTo("Please provide a valid request body.");
-
-    }
-
+    
 }

@@ -14,8 +14,6 @@ import com.example.service_backend.model.User;
 import com.example.service_backend.repository.UserRepository;
 import com.example.service_backend.services.UserService;
 
-import java.util.Collections;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -35,7 +33,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo");
+        user = new User("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945");
     }
 
     @Test

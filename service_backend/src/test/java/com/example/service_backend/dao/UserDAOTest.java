@@ -13,8 +13,8 @@ class UserDAOTest {
     @Test
     void toDataEntity() {
 
-        UserDAO userDAO = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo");
-        User user = new User(userDAO.getUsername(), userDAO.getEmail(), userDAO.getPassword(), userDAO.getName());
+        UserDAO userDAO = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945");
+        User user = new User(userDAO.getUsername(), userDAO.getEmail(), userDAO.getPassword(), userDAO.getName(), userDAO.getPhoneNumber());
 
         assertThat(userDAO.toDataEntity()).isEqualTo(user);
 
