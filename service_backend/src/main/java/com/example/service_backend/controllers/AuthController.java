@@ -28,7 +28,7 @@ public class AuthController {
     private final JWTTokenUtils jwtTokenUtils;
 
     @Autowired
-    public AuthController(PasswordEncoder passwordEncoder, UserService userService, SpringUserDetailsService springUserDetailsService, JWTTokenUtils jwtTokenUtils) {
+    public AuthController(PasswordEncoder passwordEncoder, UserService userService,SpringUserDetailsService springUserDetailsService, JWTTokenUtils jwtTokenUtils) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.springUserDetailsService = springUserDetailsService;

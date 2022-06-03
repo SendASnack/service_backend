@@ -14,10 +14,11 @@ public class UserDAO implements IEntityDAO<User> {
     private String email;
     private String password;
     private String name;
+    private String phoneNumber;
 
     @Override
     public User toDataEntity() {
-        return new User(username, email, password, name);
+        return new User(username, email, password, name, phoneNumber);
     }
 
 }

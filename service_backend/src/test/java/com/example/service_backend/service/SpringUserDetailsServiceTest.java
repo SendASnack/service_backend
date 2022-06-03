@@ -33,7 +33,7 @@ class SpringUserDetailsServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo");
+        user = new User("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945");
         userDetails = new org.springframework.security.core.userdetails.User("Hugo1307", "123456", Collections.emptyList());
     }
 
