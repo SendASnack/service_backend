@@ -1,0 +1,44 @@
+version: 2.1
+
+jobs:
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run: 
+          command: |
+            cd ./service_backend
+            mvn package -Dmaven.test.skip=true
+      - run:
+          name: Copy JAR file
+          command: |
+            mkdir -p ~/artifacts/
+            cd ./service_backend/target
+            find . -name "*.jar" -exec cp {} ~/artifacts/ \;
+      - store_artifacts:
+          path: ~/artifacts
+          destination: artifact-file
+  test:
+    machine: true
+    steps:
+      - checkout
+      - run: 
+          command: |
+            cd ./service_backend
+            mvn verify
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            cd ./service_backend
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex ".*/target/failsafe-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results/junit
+          
+workflows:
+  build-and-test:
+    jobs:
+      - test
+      - build
