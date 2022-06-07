@@ -37,6 +37,11 @@ public class ProtectedControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private UserService userService;
+
+    private UserDAO userDAO;
+
     @Container
     public static MariaDBContainer<?> mariaDb = new MariaDBContainer<>(DockerImageName.parse("mariadb"))
             .withDatabaseName("SendASnack_Service_Test")
@@ -53,11 +58,6 @@ public class ProtectedControllerTest {
         registry.add("spring.datasource.password", mariaDb::getPassword);
 
     }
-
-    @Autowired
-    private UserService userService;
-
-    private UserDAO userDAO;
 
     @BeforeEach
     public void setUp() {
