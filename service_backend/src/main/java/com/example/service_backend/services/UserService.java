@@ -47,6 +47,10 @@ public class UserService {
 
     }
 
+    public void updateUserAdress(User user){
+        userRepository.save(user);
+    }
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }

@@ -7,7 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -20,6 +24,7 @@ import org.testcontainers.utility.DockerImageName;
 import com.example.service_backend.dao.UserDAO;
 import com.example.service_backend.exception.ErrorDetails;
 import com.example.service_backend.requests.ProfileRequest;
+import com.example.service_backend.requests.AddressRequest;
 import com.example.service_backend.requests.LoginRequest;
 import com.example.service_backend.requests.MessageResponse;
 import com.example.service_backend.security.auth.AuthTokenResponse;
@@ -94,11 +99,45 @@ public class ProtectedControllerTest {
 
         ResponseEntity<AuthTokenResponse> response = restTemplate.postForEntity("/api/auth/login", loginRequest, AuthTokenResponse.class);
 
-        ResponseEntity<ProfileRequest> response2 = restTemplate.getForEntity("/api/profile",ProfileRequest.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + response.getBody().getToken());
+
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<ProfileRequest> response2 = restTemplate.exchange("/api/profile",HttpMethod.GET, entity,ProfileRequest.class);
         ProfileRequest profileResponse = response2.getBody();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(profileResponse).isNotNull();
+
+    }
+
+    @Test
+    @DisplayName("Update address with wrong body request")
+    void updateAddressWithWrongBodyRequest() {
+
+        restTemplate.postForEntity("/api/auth/register", userDAO, MessageResponse.class);
+
+        LoginRequest loginRequest = new LoginRequest(userDAO.getEmail(), userDAO.getPassword());
+
+        ResponseEntity<AuthTokenResponse> response = restTemplate.postForEntity("/api/auth/login", loginRequest, AuthTokenResponse.class);
+
+        AddressRequest addressRequest = new AddressRequest(null, null, null);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + response.getBody().getToken());
+
+        HttpEntity<?> entity = new HttpEntity<>(addressRequest, headers);
+
+        ResponseEntity<ErrorDetails> response2 = restTemplate.postForEntity("/api/profile/address", entity, ErrorDetails.class);
+        ErrorDetails errorDetailsResponse = response2.getBody();
+
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorDetailsResponse).isNotNull();
+        assertThat(errorDetailsResponse).extracting(ErrorDetails::getTimestamp).isNotNull();
+        assertThat(errorDetailsResponse).extracting(ErrorDetails::getMessage).isEqualTo("Please provide a valid request body.");
 
     }
     
