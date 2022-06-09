@@ -25,6 +25,7 @@ import com.example.service_backend.dao.UserDAO;
 import com.example.service_backend.exception.ErrorDetails;
 import com.example.service_backend.requests.ProfileRequest;
 import com.example.service_backend.requests.AddressRequest;
+import com.example.service_backend.requests.PaymentRequest;
 import com.example.service_backend.requests.LoginRequest;
 import com.example.service_backend.requests.MessageResponse;
 import com.example.service_backend.security.auth.AuthTokenResponse;
@@ -37,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @DirtiesContext
-public class ProtectedControllerTest {
+public class ProfileControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -132,12 +133,40 @@ public class ProtectedControllerTest {
         HttpEntity<?> entity = new HttpEntity<>(addressRequest, headers);
 
         ResponseEntity<ErrorDetails> response2 = restTemplate.postForEntity("/api/profile/address", entity, ErrorDetails.class);
-        ErrorDetails errorDetailsResponse = response2.getBody();
+        ErrorDetails messageResponse = response2.getBody();
 
         assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(messageResponse).isNotNull();
+        assertThat(messageResponse).extracting(ErrorDetails::getTimestamp).isNotNull();
+        assertThat(messageResponse).extracting(ErrorDetails::getMessage).isEqualTo("Please provide a valid request body.");
+
+    }
+
+    @Test
+    @DisplayName("Update payment")
+    void updatePayment() {
+
+        restTemplate.postForEntity("/api/auth/register", userDAO, MessageResponse.class);
+
+        LoginRequest loginRequest = new LoginRequest(userDAO.getEmail(), userDAO.getPassword());
+
+        ResponseEntity<AuthTokenResponse> response = restTemplate.postForEntity("/api/auth/login", loginRequest, AuthTokenResponse.class);
+
+        PaymentRequest paymentRequest = new PaymentRequest("", "Visa", "", "456");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + response.getBody().getToken());
+
+        HttpEntity<?> entity = new HttpEntity<>(paymentRequest, headers);
+
+        ResponseEntity<MessageResponse> response2 = restTemplate.postForEntity("/api/profile/payment", entity, MessageResponse.class);
+        MessageResponse errorDetailsResponse = response2.getBody();
+
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(errorDetailsResponse).isNotNull();
-        assertThat(errorDetailsResponse).extracting(ErrorDetails::getTimestamp).isNotNull();
-        assertThat(errorDetailsResponse).extracting(ErrorDetails::getMessage).isEqualTo("Please provide a valid request body.");
+        assertThat(errorDetailsResponse).extracting(MessageResponse::getTimestamp).isNotNull();
+        assertThat(errorDetailsResponse).extracting(MessageResponse::getMessage).isEqualTo("The user information was successfuly changed!");
 
     }
     

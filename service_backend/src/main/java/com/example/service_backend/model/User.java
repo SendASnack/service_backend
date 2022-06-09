@@ -41,6 +41,14 @@ public class User {
 
     private String postalCode;
 
+    private String cardName;
+
+    private String cardNumber;
+
+    private String cardType;
+
+    private String cvv;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
