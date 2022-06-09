@@ -35,6 +35,12 @@ public class User {
     @NonNull
     private String phoneNumber;
 
+    private String city;
+
+    private String address;
+
+    private String postalCode;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
