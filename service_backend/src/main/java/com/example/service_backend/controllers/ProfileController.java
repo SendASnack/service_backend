@@ -9,11 +9,8 @@ import com.example.service_backend.requests.AddressRequest;
 import com.example.service_backend.requests.PaymentRequest;
 import com.example.service_backend.requests.MessageResponse;
 
-import java.security.Principal;
 import java.time.Instant;
 import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,9 +33,8 @@ public class ProfileController {
     }
 
     @GetMapping("/profile")
-    public ProfileRequest getProfile(HttpServletRequest request) {
-        Principal principal = request.getUserPrincipal();
-        User res = userService.findByUsername(principal.getName());
+    public ProfileRequest getProfile() {
+        User res = userService.findByUsername(authHandler.getCurrentUsername());
         return new ProfileRequest(res.getName(), res.getEmail(), res.getPhoneNumber());
     }
 
