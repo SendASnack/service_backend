@@ -4,7 +4,10 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Generated
@@ -48,6 +51,10 @@ public class User {
     private String cardType;
 
     private String cvv;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private Set<Product> cart = new LinkedHashSet<>();
 
     @Override
     public boolean equals(Object o) {
