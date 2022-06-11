@@ -67,6 +67,9 @@ public class CartController {
         Product product = productOptional.get();
         User res = userService.findByUsername(authHandler.getCurrentUsername());
 
+        if (!res.getCart().contains(product))
+            throw new ProductNotFoundException(String.format("The product %s could not be found on cart.", productId));
+
         res.getCart().remove(product);
 
         userService.updateUser(res);
