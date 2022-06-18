@@ -37,8 +37,24 @@ jobs:
       - store_test_results:
           path: ~/test-results/junit
           
+  deploy:
+    docker:
+      - image: arvindr226/alpine-ssh
+    steps:
+      - checkout
+      - run: ssh -oStrictHostKeyChecking=no -v $USER@$IP "~/SendASnack/Service/Backend/deploy.sh"        
+          
 workflows:
   build-and-test:
     jobs:
       - test
       - build
+      - deploy:
+          requires:
+            - test
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+                - master
