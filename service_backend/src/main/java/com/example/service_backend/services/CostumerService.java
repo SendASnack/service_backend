@@ -8,21 +8,21 @@ import java.util.List;
 
 import com.example.service_backend.exception.implementations.AlreadyExistentUserException;
 import com.example.service_backend.exception.implementations.UserNotFoundException;
-import com.example.service_backend.repository.UserRepository;
-import com.example.service_backend.model.User;
+import com.example.service_backend.repository.CostumerRepository;
+import com.example.service_backend.model.Costumer;
 
 @Service
-public class UserService {
+public class CostumerService {
 
-    private final UserRepository userRepository;
+    private final CostumerRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public CostumerService(CostumerRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @NonNull
-    public User findByUsername(String username) {
+    public Costumer findByUsername(String username) {
 
         if (!userRepository.existsByUsername(username))
             throw new UserNotFoundException(String.format("The user %s could not be found.", username));
@@ -31,7 +31,7 @@ public class UserService {
     }
 
     @NonNull
-    public User findByEmail(String email) {
+    public Costumer findByEmail(String email) {
 
         if (!userRepository.existsByEmail(email))
             throw new UserNotFoundException(String.format("The user %s could not be found.", email));
@@ -39,19 +39,19 @@ public class UserService {
 
     }
 
-    public void registerUser(User user) {
+    public void registerUser(Costumer costumer) {
 
-        if (userRepository.existsByUsername(user.getUsername()))
+        if (userRepository.existsByUsername(costumer.getUsername()))
             throw new AlreadyExistentUserException("The provided username is already taken.");
-        userRepository.save(user);
+        userRepository.save(costumer);
 
     }
 
-    public void updateUser(User user){
-        userRepository.save(user);
+    public void updateUser(Costumer costumer){
+        userRepository.save(costumer);
     }
 
-    public List<User> getAllUsers() {
+    public List<Costumer> getAllUsers() {
         return userRepository.findAll();
     }
 

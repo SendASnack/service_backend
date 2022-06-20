@@ -23,22 +23,27 @@ public class Order {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date date;
+    
     private double totalPrice;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @ToString.Exclude
-    private Set<Product> products = new LinkedHashSet<>();
+    private List<Product> products = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name="costumerId")
+    private Costumer costumer;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Double.compare(order.totalPrice, totalPrice) == 0 && Objects.equals(id, order.id) && Objects.equals(products, order.products);
+        return Double.compare(order.totalPrice, totalPrice) == 0 && Objects.equals(id, order.id) && Objects.equals(costumer, order.costumer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, totalPrice, products);
+        return Objects.hash(id, date, totalPrice, costumer);
     }
 }

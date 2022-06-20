@@ -5,9 +5,9 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Generated
@@ -16,7 +16,7 @@ import java.util.Set;
 @ToString
 @RequiredArgsConstructor
 @NoArgsConstructor
-public class User {
+public class Costumer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,11 +38,10 @@ public class User {
     @NonNull
     private String phoneNumber;
 
-    private String city;
-
-    private String address;
-
-    private String postalCode;
+    @NonNull
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
 
     private String cardName;
 
@@ -52,16 +51,19 @@ public class User {
 
     private String cvv;
 
+    @OneToOne(mappedBy = "costumer", fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Cart c;
+
     @OneToMany(cascade = CascadeType.ALL)
-    @ToString.Exclude
-    private Set<Product> cart = new LinkedHashSet<>();
+    private List<Order> orders = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        User user = (User) o;
+        Costumer user = (Costumer) o;
         return Objects.equals(id, user.id) && username.equals(user.username) && email.equals(user.email) && password.equals(user.password) && name.equals(user.name) && phoneNumber.equals(user.phoneNumber);
     }
 

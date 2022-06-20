@@ -22,6 +22,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import com.example.service_backend.dao.UserDAO;
+import com.example.service_backend.model.Address;
 import com.example.service_backend.model.Product;
 import com.example.service_backend.requests.LoginRequest;
 import com.example.service_backend.requests.MessageResponse;
@@ -71,7 +72,8 @@ public class ProductsControllerTest {
 
     @BeforeEach
     public void setUp() throws JsonMappingException, JsonProcessingException {
-        user = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "hugo", "919312945");
+        Address address = new Address("city", "street", "postalCode");
+        user = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "hugo", "919312945", address);
         
         restTemplate.postForEntity("/api/auth/register", user, MessageResponse.class);
         ResponseEntity<AuthTokenResponse> response = restTemplate.postForEntity("/api/auth/login", new LoginRequest(user.getEmail(), user.getPassword()), AuthTokenResponse.class);
@@ -80,7 +82,7 @@ public class ProductsControllerTest {
         httpHeaders.setBearerAuth(response.getBody().getToken());
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        admin = new UserDAO("admin", "admin@ua.pt", "admin123", "admin", "919312945");
+        admin = new UserDAO("admin", "admin@ua.pt", "admin123", "admin", "919312945", address);
         
         restTemplate.postForEntity("/api/auth/register", admin , MessageResponse.class);
 

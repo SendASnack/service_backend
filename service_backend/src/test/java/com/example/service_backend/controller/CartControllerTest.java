@@ -22,6 +22,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import com.example.service_backend.dao.UserDAO;
+import com.example.service_backend.model.Address;
 import com.example.service_backend.model.Product;
 import com.example.service_backend.requests.LoginRequest;
 import com.example.service_backend.requests.MessageResponse;
@@ -46,11 +47,11 @@ public class CartControllerTest {
     @Autowired
     private ProductsService productService;
 
-    private HttpHeaders httpHeaders, httpHeadersAdmin;
+    private HttpHeaders httpHeaders;
 
     private Product product;
 
-    private UserDAO admin, user;
+    private UserDAO user;
 
     @Container
     public static MariaDBContainer<?> mariaDb = new MariaDBContainer<>(DockerImageName.parse("mariadb"))
@@ -71,7 +72,8 @@ public class CartControllerTest {
 
     @BeforeEach
     public void setUp() throws JsonMappingException, JsonProcessingException {
-        user = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "hugo", "919312945");
+        Address address = new Address("city", "street", "postalCode");
+        user = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "hugo", "919312945", address);
         
         restTemplate.postForEntity("/api/auth/register", user, MessageResponse.class);
         ResponseEntity<AuthTokenResponse> response = restTemplate.postForEntity("/api/auth/login", new LoginRequest(user.getEmail(), user.getPassword()), AuthTokenResponse.class);
@@ -134,7 +136,7 @@ public class CartControllerTest {
         Long saved = productService.save(product);
         product.setId(saved);
 
-        ResponseEntity<MessageResponse> response = restTemplate.exchange(String.format("/api/cart/%s/add", product.getId()), HttpMethod.PATCH ,new HttpEntity<>(httpHeaders), MessageResponse.class);
+        restTemplate.exchange(String.format("/api/cart/%s/add", product.getId()), HttpMethod.PATCH ,new HttpEntity<>(httpHeaders), MessageResponse.class);
         ResponseEntity<MessageResponse> response2 = restTemplate.exchange(String.format("/api/cart/%s/remove", product.getId()), HttpMethod.PATCH ,new HttpEntity<>(httpHeaders), MessageResponse.class);
 
         assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);

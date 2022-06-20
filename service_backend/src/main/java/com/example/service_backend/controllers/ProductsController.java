@@ -1,7 +1,5 @@
 package com.example.service_backend.controllers;
 
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,7 +59,7 @@ public class ProductsController {
 
         productService.registerProduct(product);
 
-        return new MessageResponse(Date.from(Instant.now()), "The product was successfully registered!");
+        return new MessageResponse("The product was successfully registered!");
     } 
 
     @DeleteMapping("/admin/product/{productId}")
@@ -79,7 +77,7 @@ public class ProductsController {
 
         productService.deleteProduct(product);
 
-        return new MessageResponse(Date.from(Instant.now()), "The product was successfully deleted!");
+        return new MessageResponse("The product was successfully deleted!");
     } 
     
 }
