@@ -36,15 +36,16 @@ public class ProductsController {
 
     @GetMapping("/products")
     public List<Product> getAllProducts(@RequestParam String category, @RequestParam String maxPrice) {
+
         List<Product> products = productService.getAllProducts();
 
         if (products.isEmpty())
             throw new BadRequestException("No avaiable products at the moment.");
 
         if (!(category.equals("")) || !(maxPrice.equals(""))){
-            for (int i=0; i<products.size(); i++){
-                if (!(products.get(i).getCategory().equals(category) && products.get(i).getPrice()==Double.parseDouble(maxPrice)))
-                    products.remove(i);
+            for (Product p : productService.getAllProducts()){
+                if (!(p.getCategory().equals(category)) || p.getPrice()>Double.parseDouble(maxPrice))
+                    products.remove(p);
             }
         }
 
