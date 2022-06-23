@@ -53,10 +53,6 @@ public class ProductsControllerTest {
 
     private Product product;
 
-    private UserDAO admin;
-    
-    private UserDAO user;
-
     @Container
     public static MariaDBContainer<?> mariaDb = new MariaDBContainer<>(DockerImageName.parse("mariadb"))
             .withDatabaseName("SendASnack_Service_Test")
@@ -77,7 +73,7 @@ public class ProductsControllerTest {
     @BeforeEach
     public void setUp() throws JsonMappingException, JsonProcessingException {
         Address address = new Address("city", "street", "postalCode");
-        user = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "hugo", "919312945", address);
+        UserDAO user = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "hugo", "919312945", address);
         
         restTemplate.postForEntity("/api/auth/register", user, MessageResponse.class);
         ResponseEntity<AuthTokenResponse> response = restTemplate.postForEntity("/api/auth/login", new LoginRequest(user.getEmail(), user.getPassword()), AuthTokenResponse.class);
@@ -86,7 +82,7 @@ public class ProductsControllerTest {
         httpHeaders.setBearerAuth(response.getBody().getToken());
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        admin = new UserDAO("admin", "admin@ua.pt", "admin123", "admin", "919312945", address);
+        UserDAO admin = new UserDAO("admin", "admin@ua.pt", "admin123", "admin", "919312945", address);
         
         restTemplate.postForEntity("/api/auth/register", admin , MessageResponse.class);
 
