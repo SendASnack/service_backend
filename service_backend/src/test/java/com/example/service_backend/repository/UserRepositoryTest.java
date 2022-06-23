@@ -13,7 +13,9 @@ import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
-import com.example.service_backend.model.User;
+
+import com.example.service_backend.model.Address;
+import com.example.service_backend.model.Costumer;
 
 import java.time.Duration;
 
@@ -24,9 +26,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserRepositoryTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private CostumerRepository userRepository;
 
-    private User user;
+    private Costumer user;
 
     @Container
     public static MariaDBContainer<?> mariaDb = new MariaDBContainer<>(DockerImageName.parse("mariadb"))
@@ -47,7 +49,8 @@ public class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945");
+        Address address = new Address("city", "street", "postalCode");
+        user = new Costumer("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945", address);
     }
 
     @AfterEach
@@ -61,7 +64,7 @@ public class UserRepositoryTest {
 
         userRepository.save(user);
 
-        User loadedUser = userRepository.findByUsername(user.getUsername());
+        Costumer loadedUser = userRepository.findByUsername(user.getUsername());
 
         assertThat(loadedUser)
                 .isNotNull()
@@ -72,7 +75,7 @@ public class UserRepositoryTest {
     @Test
     @DisplayName("Find non-existent user by username")
     void findNonExistentUserByUsername() {
-        User loadedUser = userRepository.findByUsername("UserNotInDB");
+        Costumer loadedUser = userRepository.findByUsername("UserNotInDB");
         assertThat(loadedUser).isNull();
     }
 
@@ -82,7 +85,7 @@ public class UserRepositoryTest {
 
         userRepository.save(user);
 
-        User loadedUser = userRepository.findByEmail(user.getEmail());
+        Costumer loadedUser = userRepository.findByEmail(user.getEmail());
 
         assertThat(loadedUser)
                 .isNotNull()
@@ -93,7 +96,7 @@ public class UserRepositoryTest {
     @Test
     @DisplayName("Find non-existent user by email")
     void findNonExistentUserByEmail() {
-        User loadedUser = userRepository.findByEmail("UserNotInDB@ua.pt");
+        Costumer loadedUser = userRepository.findByEmail("UserNotInDB@ua.pt");
         assertThat(loadedUser).isNull();
     }
 

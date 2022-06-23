@@ -1,16 +1,13 @@
 package com.example.service_backend.controllers;
 
-import com.example.service_backend.services.UserService;
+import com.example.service_backend.services.CostumerService;
+import com.example.service_backend.utils.AddressRequest;
+import com.example.service_backend.utils.MessageResponse;
+import com.example.service_backend.utils.PaymentRequest;
+import com.example.service_backend.utils.ProfileRequest;
 import com.example.service_backend.exception.implementations.BadRequestException;
-import com.example.service_backend.model.User;
-import com.example.service_backend.requests.ProfileRequest;
+import com.example.service_backend.model.Costumer;
 import com.example.service_backend.security.auth.AuthHandler;
-import com.example.service_backend.requests.AddressRequest;
-import com.example.service_backend.requests.PaymentRequest;
-import com.example.service_backend.requests.MessageResponse;
-
-import java.time.Instant;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,38 +21,39 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfileController {
 
     private final AuthHandler authHandler;
-    private final UserService userService;
+    private final CostumerService userService;
 
     @Autowired
-    public ProfileController(UserService userService, AuthHandler authHandler) {
+    public ProfileController(CostumerService userService, AuthHandler authHandler) {
         this.userService = userService;
         this.authHandler = authHandler;
     }
 
     @GetMapping("/profile")
     public ProfileRequest getProfile() {
-        User res = userService.findByUsername(authHandler.getCurrentUsername());
+        Costumer res = userService.findByUsername(authHandler.getCurrentUsername());
         return new ProfileRequest(res.getName(), res.getEmail(), res.getPhoneNumber());
     }
 
     @PostMapping("/profile/address")
     public MessageResponse updateAddress(@RequestBody AddressRequest addressRequest){
-        User res = userService.findByUsername(authHandler.getCurrentUsername());
+        Costumer res = userService.findByUsername(authHandler.getCurrentUsername());
         String city = addressRequest.getCity();
         String address = addressRequest.getAddress();
         String postalCode = addressRequest.getPostalCode();
         if (city == null || address == null || postalCode == null)
             throw new BadRequestException("Please provide a valid request body.");
-        res.setCity(city);
-        res.setAddress(address);
-        res.setPostalCode(postalCode);
+
+        res.getAddress().setCity(city);
+        res.getAddress().setPostalCode(postalCode);
+        res.getAddress().setStreet(address);
         userService.updateUser(res);
-        return new MessageResponse(Date.from(Instant.now()), "The user information was successfuly changed!");
+        return new MessageResponse("The user information was successfuly changed!");
     }
     
     @PostMapping("/profile/payment")
     public MessageResponse updatePayment(@RequestBody PaymentRequest paymentRequest){
-        User res = userService.findByUsername(authHandler.getCurrentUsername());
+        Costumer res = userService.findByUsername(authHandler.getCurrentUsername());
         String name = paymentRequest.getName();
         String cardNumber = paymentRequest.getCardNumber();
         String cardType = paymentRequest.getCardType();
@@ -67,6 +65,6 @@ public class ProfileController {
         res.setCardType(cardType);
         res.setCvv(cvv);
         userService.updateUser(res);
-        return new MessageResponse(Date.from(Instant.now()), "The user information was successfuly changed!");
+        return new MessageResponse("The user information was successfuly changed!");
     }
 }

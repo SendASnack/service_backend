@@ -1,4 +1,4 @@
-package com.example.service_backend.requests;
+package com.example.service_backend.utils;
 
 import lombok.Data;
 import lombok.Generated;

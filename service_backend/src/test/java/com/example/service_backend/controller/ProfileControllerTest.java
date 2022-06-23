@@ -23,13 +23,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import com.example.service_backend.dao.UserDAO;
 import com.example.service_backend.exception.ErrorDetails;
-import com.example.service_backend.requests.ProfileRequest;
-import com.example.service_backend.requests.AddressRequest;
-import com.example.service_backend.requests.PaymentRequest;
-import com.example.service_backend.requests.LoginRequest;
-import com.example.service_backend.requests.MessageResponse;
+import com.example.service_backend.model.Address;
 import com.example.service_backend.security.auth.AuthTokenResponse;
-import com.example.service_backend.services.UserService;
+import com.example.service_backend.services.CostumerService;
+import com.example.service_backend.utils.AddressRequest;
+import com.example.service_backend.utils.LoginRequest;
+import com.example.service_backend.utils.MessageResponse;
+import com.example.service_backend.utils.PaymentRequest;
+import com.example.service_backend.utils.ProfileRequest;
 
 import java.time.Duration;
 
@@ -44,7 +45,7 @@ public class ProfileControllerTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private UserService userService;
+    private CostumerService userService;
 
     private UserDAO userDAO;
 
@@ -67,7 +68,8 @@ public class ProfileControllerTest {
 
     @BeforeEach
     public void setUp() {
-        userDAO = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945");
+        Address address = new Address("city", "street", "postalCode");
+        userDAO = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945", address);
         userService.removeAll();
     }
 

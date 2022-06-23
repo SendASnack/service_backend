@@ -3,7 +3,6 @@ package com.example.service_backend.model;
 import lombok.*;
 
 import javax.persistence.*;
-
 import java.util.Objects;
 
 @Generated
@@ -12,28 +11,34 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@AllArgsConstructor
-public class Rider {
+@NoArgsConstructor
+public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String name;
-    private String email;
+    @NonNull
+    private String city;
+
+    @NonNull
+    private String street;
+
+    @NonNull
+    private String postalCode;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Rider rider = (Rider) o;
-        return Objects.equals(id, rider.id) && Objects.equals(name, rider.name) && Objects.equals(email, rider.email);
+        Address address = (Address) o;
+        return Objects.equals(id, address.id) && Objects.equals(city, address.city) && Objects.equals(street, address.street) && Objects.equals(postalCode, address.postalCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, email);
+        return Objects.hash(id, city, street, postalCode);
     }
 
 }

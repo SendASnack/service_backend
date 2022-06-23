@@ -56,6 +56,11 @@ public class ProductsService {
         return productsRepository.findAll();
     }
 
+    public Long save(Product product) {
+        Product savedEntity = productsRepository.save(product);
+        return savedEntity != null ? savedEntity.getId() : null;
+    }
+
     public void deleteProduct(Product product){
         productsRepository.delete(product);
     }

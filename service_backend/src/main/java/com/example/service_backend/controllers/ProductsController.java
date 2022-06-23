@@ -1,7 +1,5 @@
 package com.example.service_backend.controllers;
 
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,9 +17,9 @@ import com.example.service_backend.exception.implementations.BadRequestException
 import com.example.service_backend.exception.implementations.ForbiddenOperationException;
 import com.example.service_backend.exception.implementations.ProductNotFoundException;
 import com.example.service_backend.model.Product;
-import com.example.service_backend.requests.MessageResponse;
 import com.example.service_backend.security.auth.AuthHandler;
 import com.example.service_backend.services.ProductsService;
+import com.example.service_backend.utils.MessageResponse;
 
 @RestController
 @RequestMapping("/api")
@@ -38,15 +36,16 @@ public class ProductsController {
 
     @GetMapping("/products")
     public List<Product> getAllProducts(@RequestParam String category, @RequestParam String maxPrice) {
+
         List<Product> products = productService.getAllProducts();
 
         if (products.isEmpty())
             throw new BadRequestException("No avaiable products at the moment.");
 
         if (!(category.equals("")) || !(maxPrice.equals(""))){
-            for (int i=0; i<products.size(); i++){
-                if (!(products.get(i).getCategory().equals(category) && products.get(i).getPrice()==Double.parseDouble(maxPrice)))
-                    products.remove(i);
+            for (Product p : productService.getAllProducts()){
+                if (!(p.getCategory().equals(category)) || p.getPrice()>Double.parseDouble(maxPrice))
+                    products.remove(p);
             }
         }
 
@@ -61,7 +60,7 @@ public class ProductsController {
 
         productService.registerProduct(product);
 
-        return new MessageResponse(Date.from(Instant.now()), "The product was successfully registered!");
+        return new MessageResponse("The product was successfully registered!");
     } 
 
     @DeleteMapping("/admin/product/{productId}")
@@ -79,7 +78,7 @@ public class ProductsController {
 
         productService.deleteProduct(product);
 
-        return new MessageResponse(Date.from(Instant.now()), "The product was successfully deleted!");
+        return new MessageResponse("The product was successfully deleted!");
     } 
     
 }
