@@ -47,11 +47,15 @@ public class ProductsControllerTest {
     @Autowired
     private ProductsService productService;
 
-    private HttpHeaders httpHeaders, httpHeadersAdmin;
+    private HttpHeaders httpHeaders; 
+
+    private HttpHeaders httpHeadersAdmin;
 
     private Product product;
 
-    private UserDAO admin, user;
+    private UserDAO admin;
+    
+    private UserDAO user;
 
     @Container
     public static MariaDBContainer<?> mariaDb = new MariaDBContainer<>(DockerImageName.parse("mariadb"))

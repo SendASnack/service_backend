@@ -1,6 +1,6 @@
 package com.example.service_backend.controllers;
 
-import com.example.service_backend.model.BusinessUser;
+import com.example.service_backend.model.BusinessUserUtil;
 
 import org.json.JSONObject;
 import org.springframework.http.*;
@@ -88,7 +88,7 @@ public class AuthController {
 
         ResponseEntity<LoginResponse> response = template.exchange("http://20.77.90.223:8080/api/auth/login",HttpMethod.POST, entity, LoginResponse.class);
 
-        BusinessUser.businessToken = response.getBody().getToken();
+        BusinessUserUtil.businessToken = response.getBody().getToken();
         
         /* 
         Optional<Cart> cartOptional = cartService.findById(user.getId());

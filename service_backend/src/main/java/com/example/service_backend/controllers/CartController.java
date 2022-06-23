@@ -31,7 +31,7 @@ import com.example.service_backend.exception.implementations.CartNotFoundExcepti
 import com.example.service_backend.exception.implementations.ForbiddenOperationException;
 import com.example.service_backend.exception.implementations.OrderNotFoundException;
 import com.example.service_backend.exception.implementations.ProductNotFoundException;
-import com.example.service_backend.model.BusinessUser;
+import com.example.service_backend.model.BusinessUserUtil;
 import com.example.service_backend.model.Cart;
 import com.example.service_backend.model.CartInfo;
 import com.example.service_backend.model.Order;
@@ -256,7 +256,7 @@ public class CartController {
 
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(BusinessUser.businessToken);
+        headers.setBearerAuth(BusinessUserUtil.businessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<String>(json.toString(),headers);
 
@@ -276,7 +276,7 @@ public class CartController {
 
             HttpEntity<WebHook> entity2 = new HttpEntity<WebHook>(webHook,headers);
 
-            ResponseEntity<MessageResponse> responseWebHook = template.exchange("http://20.77.90.223:8080/api/business/webhook", HttpMethod.POST, entity2, MessageResponse.class);
+            template.exchange("http://20.77.90.223:8080/api/business/webhook", HttpMethod.POST, entity2, MessageResponse.class);
 
             for (CartInfo info:cartInfoService.getAllCarts()){
                 if (info.getCart().equals(res.getC())){
@@ -296,7 +296,7 @@ public class CartController {
             if (orderRequest.getOrderRequestId()==orderId){
                 RestTemplate template = new RestTemplate();
                 HttpHeaders headers = new HttpHeaders();
-                headers.setBearerAuth(BusinessUser.businessToken);
+                headers.setBearerAuth(BusinessUserUtil.businessToken);
                 headers.setContentType(MediaType.APPLICATION_JSON);
                 HttpEntity<String> entity = new HttpEntity<String>(headers);
         
