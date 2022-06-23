@@ -10,8 +10,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.example.service_backend.services.SpringUserDetailsService;
-import com.example.service_backend.services.UserService;
-import com.example.service_backend.model.User;
+import com.example.service_backend.services.CostumerService;
+import com.example.service_backend.model.Address;
+import com.example.service_backend.model.Costumer;
 
 import java.util.Collections;
 
@@ -23,17 +24,18 @@ import static org.mockito.Mockito.when;
 class SpringUserDetailsServiceTest {
 
     @Mock
-    private UserService userService;
+    private CostumerService userService;
 
     @InjectMocks
     private SpringUserDetailsService springUserDetailsService;
 
     private UserDetails userDetails;
-    private User user;
+    private Costumer user;
 
     @BeforeEach
     void setUp() {
-        user = new User("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945");
+        Address address = new Address("city", "street", "postalCode");
+        user = new Costumer("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945", address);
         userDetails = new org.springframework.security.core.userdetails.User("Hugo1307", "123456", Collections.emptyList());
     }
 

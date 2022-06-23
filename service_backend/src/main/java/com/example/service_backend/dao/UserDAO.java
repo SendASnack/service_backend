@@ -3,22 +3,25 @@ package com.example.service_backend.dao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Generated;
-import com.example.service_backend.model.User;
+
+import com.example.service_backend.model.Address;
+import com.example.service_backend.model.Costumer;
 
 @Data
 @AllArgsConstructor
 @Generated
-public class UserDAO implements IEntityDAO<User> {
+public class UserDAO implements IEntityDAO<Costumer> {
 
     private String username;
     private String email;
     private String password;
     private String name;
     private String phoneNumber;
+    private Address address;
 
     @Override
-    public User toDataEntity() {
-        return new User(username, email, password, name, phoneNumber);
+    public Costumer toDataEntity() {
+        return new Costumer(username, email, password, name, phoneNumber, address);
     }
 
 }

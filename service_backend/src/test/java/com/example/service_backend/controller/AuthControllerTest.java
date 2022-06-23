@@ -19,11 +19,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import com.example.service_backend.dao.UserDAO;
 import com.example.service_backend.exception.ErrorDetails;
-import com.example.service_backend.model.User;
-import com.example.service_backend.requests.LoginRequest;
-import com.example.service_backend.requests.MessageResponse;
+import com.example.service_backend.model.Address;
+import com.example.service_backend.model.Costumer;
 import com.example.service_backend.security.auth.AuthTokenResponse;
-import com.example.service_backend.services.UserService;
+import com.example.service_backend.services.CostumerService;
+import com.example.service_backend.utils.LoginRequest;
+import com.example.service_backend.utils.MessageResponse;
 
 import java.time.Duration;
 import java.util.List;
@@ -37,6 +38,11 @@ class AuthControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private CostumerService userService;
+
+    private UserDAO userDAO;
 
     @Container
     public static MariaDBContainer<?> mariaDb = new MariaDBContainer<>(DockerImageName.parse("mariadb"))
@@ -55,14 +61,10 @@ class AuthControllerTest {
 
     }
 
-    @Autowired
-    private UserService userService;
-
-    private UserDAO userDAO;
-
     @BeforeEach
     public void setUp() {
-        userDAO = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945");
+        Address address = new Address("city", "street", "postalCode");
+        userDAO = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945", address);
         userService.removeAll();
     }
 
@@ -77,14 +79,14 @@ class AuthControllerTest {
 
         ResponseEntity<MessageResponse> response = restTemplate.postForEntity("/api/auth/register", userDAO, MessageResponse.class);
 
-        List<User> users = userService.getAllUsers();
+        List<Costumer> users = userService.getAllUsers();
 
         assertThat(userService.findByUsername(userDAO.getUsername())).isNotNull();
         assertThat(users).hasSize(1).doesNotContainNull();
 
-        assertThat(users).extracting(User::getUsername).containsOnly(userDAO.getUsername());
-        assertThat(users).extracting(User::getEmail).containsOnly(userDAO.getEmail());
-        assertThat(users).extracting(User::getName).containsOnly(userDAO.getName());
+        assertThat(users).extracting(Costumer::getUsername).containsOnly(userDAO.getUsername());
+        assertThat(users).extracting(Costumer::getEmail).containsOnly(userDAO.getEmail());
+        assertThat(users).extracting(Costumer::getName).containsOnly(userDAO.getName());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).extracting(MessageResponse::getMessage).isEqualTo("The user was successfully registered!");

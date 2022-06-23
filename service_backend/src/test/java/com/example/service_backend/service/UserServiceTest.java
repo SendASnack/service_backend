@@ -10,9 +10,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.service_backend.exception.implementations.AlreadyExistentUserException;
 import com.example.service_backend.exception.implementations.UserNotFoundException;
-import com.example.service_backend.model.User;
-import com.example.service_backend.repository.UserRepository;
-import com.example.service_backend.services.UserService;
+import com.example.service_backend.model.Address;
+import com.example.service_backend.model.Costumer;
+import com.example.service_backend.repository.CostumerRepository;
+import com.example.service_backend.services.CostumerService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -24,16 +25,17 @@ import static org.mockito.Mockito.when;
 class UserServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private CostumerRepository userRepository;
 
     @InjectMocks
-    private UserService userService;
+    private CostumerService userService;
 
-    private User user;
+    private Costumer user;
 
     @BeforeEach
     void setUp() {
-        user = new User("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945");
+        Address address = new Address("city", "street", "postalCode");
+        user = new Costumer("Hugo1307", "hugogoncalves13@ua.pt", "12345", "Hugo", "919312945", address);
     }
 
     @Test
