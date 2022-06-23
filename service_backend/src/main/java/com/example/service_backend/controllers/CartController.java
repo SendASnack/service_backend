@@ -2,6 +2,7 @@ package com.example.service_backend.controllers;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,7 @@ import com.example.service_backend.model.Cart;
 import com.example.service_backend.model.CartInfo;
 import com.example.service_backend.model.Order;
 import com.example.service_backend.model.OrderRequest;
+import com.example.service_backend.model.OrderStatus;
 import com.example.service_backend.model.Product;
 import com.example.service_backend.model.webhooks.Hook;
 import com.example.service_backend.model.webhooks.WebHook;
@@ -270,6 +272,11 @@ public class CartController {
 
             ResponseEntity<MessageResponse> responseWebHook = template.exchange("http://20.77.90.223:8080/api/business/webhook", HttpMethod.POST, entity2, MessageResponse.class);
 
+            for (CartInfo info:cartInfoService.getAllCarts()){
+                if (info.getCart().equals(res.getC())){
+                    cartInfoService.deleteCart(info);
+                }
+            }
 
         }
 
@@ -278,8 +285,6 @@ public class CartController {
 
     @DeleteMapping("/cart/{orderId}/cancel")
     public MessageResponse cancelOrder(@PathVariable Long orderId){
-        
-        Costumer res = userService.findByUsername(authHandler.getCurrentUsername());
 
         for(OrderRequest orderRequest : orderRequestService.getAllOrders()){
             if (orderRequest.getOrderRequestId()==orderId){
@@ -302,13 +307,51 @@ public class CartController {
 
     }
 
+    @GetMapping("/orders/pending")
+    public List<OrderRequest> getOrdersRequest(){
+        
+        Costumer res = userService.findByUsername(authHandler.getCurrentUsername());
+
+        List<Order> orders = res.getOrders();
+
+        List<OrderRequest> ordersPending = new ArrayList<>();
+
+        for(OrderRequest orderRequest : orderRequestService.getAllOrders()){
+            for (Order ord : orders){
+                if (orderRequest.getOrder().equals(ord)){
+                    orderRequest.setCostumer(null);
+                    ordersPending.add(orderRequest);
+                }
+            }
+        }
+
+        if (ordersPending.isEmpty())
+            throw new OrderNotFoundException("There is no pending orders for the current user");
+
+        return ordersPending;
+    }
+
     @GetMapping("/history")
     public List<Order> getPreviousOrders(){
 
         Costumer res = userService.findByUsername(authHandler.getCurrentUsername());
 
+        List<Order> orders = new ArrayList<>();
+        List<Order> iterate = res.getOrders();
+
         if (res.getOrders().isEmpty())
             throw new OrderNotFoundException("No available orders for the current user.");
+
+        for(OrderRequest orderRequest : orderRequestService.getAllOrders()){
+            for (Order ord : iterate){
+                if (orderRequest.getOrder().equals(ord) && !(orderRequest.getOrderStatus()==null || orderRequest.getOrderStatus().equals(OrderStatus.DELIVERED))){
+                    orders.add(ord);
+                }
+            }
+        }
+
+        if (orders.isEmpty())
+            throw new OrderNotFoundException("No available previous orders for the current user.");
 
         return res.getOrders();
     }

@@ -26,7 +26,6 @@ public class OrderRequest {
     @NonNull
     private String businessUsername;
 
-    @NonNull
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "costumer_id", nullable = false)
     private Costumer costumer;
