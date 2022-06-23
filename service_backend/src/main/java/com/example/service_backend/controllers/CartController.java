@@ -212,7 +212,7 @@ public class CartController {
         c.add(Calendar.DATE, 1);
         date = c.getTime();
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        order.setDate(date);
+        order.setDate(Date.from(Instant.now()));
         order.setTotalPrice(totalPrice);
         order.setCostumer(res.getUsername());
 
@@ -252,7 +252,7 @@ public class CartController {
                 .put("totalPrice", orderRequest.getOrder().getTotalPrice())
                 .put("date", dt.format(orderRequest.getOrder().getDate()));
         
-        json.put("orderStatus", orderRequest.getOrderStatus()).put("deliveryTime", 0).put("order", orderr).put("costumer", costumer).put("businessUsername", "SendASnack");
+        json.put("orderStatus", orderRequest.getOrderStatus()).put("deliveryTime", dt.format(date)).put("order", orderr).put("costumer", costumer).put("businessUsername", "SendASnack");
 
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
