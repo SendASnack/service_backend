@@ -2,7 +2,9 @@ package com.example.service_backend.controllers;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -204,7 +206,11 @@ public class CartController {
         if(order.getProducts().isEmpty())
             throw new ForbiddenOperationException("Can't order because there are no products on your cart.");
 
-        Date date = new Date();
+        Date date = Date.from(Instant.now());
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, 1);
+        date = c.getTime();
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         order.setDate(date);
         order.setTotalPrice(totalPrice);
