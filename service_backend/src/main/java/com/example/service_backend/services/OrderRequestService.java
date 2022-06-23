@@ -32,6 +32,10 @@ public class OrderRequestService {
         return orderRequestRepository.findAllByCostumerId(costumer);
     }
 
+    public void updateOrderRequestId(OrderRequest order){
+        orderRequestRepository.save(order);
+    }
+
     public Long save(OrderRequest order) {
         OrderRequest savedEntity = orderRequestRepository.save(order);
         return savedEntity != null ? savedEntity.getId() : null;

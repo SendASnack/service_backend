@@ -26,13 +26,12 @@ public class Order {
     
     private double totalPrice;
 
-    @OneToMany
+    @ManyToMany
     @ToString.Exclude
     private List<Product> products = new ArrayList<>();
 
-    @ManyToOne
     @JoinColumn(name="costumerId")
-    private Costumer costumer;
+    private String costumer;
 
     @Override
     public boolean equals(Object o) {

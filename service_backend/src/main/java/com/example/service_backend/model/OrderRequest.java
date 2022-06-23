@@ -19,7 +19,7 @@ import java.util.Objects;
 public class OrderRequest {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -39,6 +39,8 @@ public class OrderRequest {
     private Date deliveryTime;
 
     private OrderStatus orderStatus;
+
+    private Long orderRequestId;
 
     @Override
     public boolean equals(Object o) {

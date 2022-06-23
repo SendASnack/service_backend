@@ -1,13 +1,13 @@
 package com.example.service_backend.controllers;
 
 import com.example.service_backend.services.CostumerService;
+import com.example.service_backend.utils.AddressRequest;
+import com.example.service_backend.utils.MessageResponse;
+import com.example.service_backend.utils.PaymentRequest;
+import com.example.service_backend.utils.ProfileRequest;
 import com.example.service_backend.exception.implementations.BadRequestException;
 import com.example.service_backend.model.Costumer;
-import com.example.service_backend.requests.ProfileRequest;
 import com.example.service_backend.security.auth.AuthHandler;
-import com.example.service_backend.requests.AddressRequest;
-import com.example.service_backend.requests.PaymentRequest;
-import com.example.service_backend.requests.MessageResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

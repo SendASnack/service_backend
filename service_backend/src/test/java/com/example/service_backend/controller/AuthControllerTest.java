@@ -21,10 +21,10 @@ import com.example.service_backend.dao.UserDAO;
 import com.example.service_backend.exception.ErrorDetails;
 import com.example.service_backend.model.Address;
 import com.example.service_backend.model.Costumer;
-import com.example.service_backend.requests.LoginRequest;
-import com.example.service_backend.requests.MessageResponse;
 import com.example.service_backend.security.auth.AuthTokenResponse;
 import com.example.service_backend.services.CostumerService;
+import com.example.service_backend.utils.LoginRequest;
+import com.example.service_backend.utils.MessageResponse;
 
 import java.time.Duration;
 import java.util.List;

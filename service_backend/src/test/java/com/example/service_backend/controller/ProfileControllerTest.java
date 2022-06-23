@@ -24,13 +24,13 @@ import org.testcontainers.utility.DockerImageName;
 import com.example.service_backend.dao.UserDAO;
 import com.example.service_backend.exception.ErrorDetails;
 import com.example.service_backend.model.Address;
-import com.example.service_backend.requests.ProfileRequest;
-import com.example.service_backend.requests.AddressRequest;
-import com.example.service_backend.requests.PaymentRequest;
-import com.example.service_backend.requests.LoginRequest;
-import com.example.service_backend.requests.MessageResponse;
 import com.example.service_backend.security.auth.AuthTokenResponse;
 import com.example.service_backend.services.CostumerService;
+import com.example.service_backend.utils.AddressRequest;
+import com.example.service_backend.utils.LoginRequest;
+import com.example.service_backend.utils.MessageResponse;
+import com.example.service_backend.utils.PaymentRequest;
+import com.example.service_backend.utils.ProfileRequest;
 
 import java.time.Duration;
 

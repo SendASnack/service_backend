@@ -3,8 +3,9 @@ package com.example.service_backend.dao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Generated;
-import com.example.service_backend.model.Costumer;
+
 import com.example.service_backend.model.Address;
+import com.example.service_backend.model.Costumer;
 
 @Data
 @AllArgsConstructor

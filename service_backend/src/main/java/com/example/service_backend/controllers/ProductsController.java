@@ -17,9 +17,9 @@ import com.example.service_backend.exception.implementations.BadRequestException
 import com.example.service_backend.exception.implementations.ForbiddenOperationException;
 import com.example.service_backend.exception.implementations.ProductNotFoundException;
 import com.example.service_backend.model.Product;
-import com.example.service_backend.requests.MessageResponse;
 import com.example.service_backend.security.auth.AuthHandler;
 import com.example.service_backend.services.ProductsService;
+import com.example.service_backend.utils.MessageResponse;
 
 @RestController
 @RequestMapping("/api")

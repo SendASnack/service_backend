@@ -8,8 +8,8 @@ import java.util.List;
 
 import com.example.service_backend.exception.implementations.AlreadyExistentUserException;
 import com.example.service_backend.exception.implementations.UserNotFoundException;
-import com.example.service_backend.repository.CostumerRepository;
 import com.example.service_backend.model.Costumer;
+import com.example.service_backend.repository.CostumerRepository;
 
 @Service
 public class CostumerService {
@@ -41,7 +41,7 @@ public class CostumerService {
 
     public void registerUser(Costumer costumer) {
 
-        if (userRepository.existsByUsername(costumer.getUsername()))
+        if (userRepository.existsByUsername(costumer.getUsername()) || userRepository.existsByEmail(costumer.getEmail()))
             throw new AlreadyExistentUserException("The provided username is already taken.");
         userRepository.save(costumer);
 

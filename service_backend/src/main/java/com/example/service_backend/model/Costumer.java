@@ -3,6 +3,10 @@ package com.example.service_backend.model;
 import lombok.*;
 import org.hibernate.Hibernate;
 
+import com.example.service_backend.model.Address;
+import com.example.service_backend.model.Cart;
+import com.example.service_backend.model.Order;
+
 import javax.persistence.*;
 
 import java.util.ArrayList;
@@ -56,6 +60,7 @@ public class Costumer {
     private Cart c;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "costumer_id")
     private List<Order> orders = new ArrayList<>();
 
     @Override

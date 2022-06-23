@@ -32,7 +32,7 @@ public class CartService {
     }
 
     @NonNull
-    public Optional<Cart> findByCostumer(Costumer costumer) {
+    public Optional<Cart> findByCostume(Costumer costumer) {
 
         if (!cartRepository.existsByCostumer(costumer))
             throw new UserNotFoundException("Cart not found!");

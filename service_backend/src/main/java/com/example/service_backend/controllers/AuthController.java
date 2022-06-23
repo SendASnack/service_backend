@@ -1,5 +1,10 @@
 package com.example.service_backend.controllers;
 
+import com.example.service_backend.model.BusinessUser;
+
+import org.json.JSONObject;
+import org.springframework.http.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,12 +15,14 @@ import com.example.service_backend.dao.UserDAO;
 import com.example.service_backend.exception.implementations.BadRequestException;
 import com.example.service_backend.model.Cart;
 import com.example.service_backend.model.Costumer;
-import com.example.service_backend.requests.LoginRequest;
-import com.example.service_backend.requests.MessageResponse;
 import com.example.service_backend.security.auth.AuthTokenResponse;
 import com.example.service_backend.security.auth.JWTTokenUtils;
+import com.example.service_backend.security.auth.LoginResponse;
 import com.example.service_backend.services.SpringUserDetailsService;
+import com.example.service_backend.utils.LoginRequest;
+import com.example.service_backend.utils.MessageResponse;
 import com.example.service_backend.services.CostumerService;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -69,6 +76,20 @@ public class AuthController {
         if (!passwordEncoder.matches(password, user.getPassword()))
             throw new BadCredentialsException("The provided password is wrong.");
 
+        String businessEmail = "business_sendasnack@ua.pt";
+        String businessPassword = "send_a_snack_business_pass";
+        
+        RestTemplate template = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        JSONObject businessAuth = new JSONObject();
+        businessAuth.put("email", businessEmail).put("password", businessPassword);
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<String>(businessAuth.toString(),httpHeaders);
+
+        ResponseEntity<LoginResponse> response = template.exchange("http://20.77.90.223:8080/api/auth/login",HttpMethod.POST, entity, LoginResponse.class);
+
+        BusinessUser.businessToken = response.getBody().getToken();
+        
         /* 
         Optional<Cart> cartOptional = cartService.findById(user.getId());
 
