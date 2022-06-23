@@ -3,10 +3,6 @@ package com.example.service_backend.model;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import com.example.service_backend.model.Address;
-import com.example.service_backend.model.Cart;
-import com.example.service_backend.model.Order;
-
 import javax.persistence.*;
 
 import java.util.ArrayList;

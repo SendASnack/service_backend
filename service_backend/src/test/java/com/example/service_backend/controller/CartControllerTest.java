@@ -51,8 +51,6 @@ public class CartControllerTest {
 
     private Product product;
 
-    private UserDAO user;
-
     @Container
     public static MariaDBContainer<?> mariaDb = new MariaDBContainer<>(DockerImageName.parse("mariadb"))
             .withDatabaseName("SendASnack_Service_Test")
@@ -73,7 +71,7 @@ public class CartControllerTest {
     @BeforeEach
     public void setUp() throws JsonMappingException, JsonProcessingException {
         Address address = new Address("city", "street", "postalCode");
-        user = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "hugo", "919312945", address);
+        UserDAO user = new UserDAO("Hugo1307", "hugogoncalves13@ua.pt", "12345", "hugo", "919312945", address);
         
         restTemplate.postForEntity("/api/auth/register", user, MessageResponse.class);
         ResponseEntity<AuthTokenResponse> response = restTemplate.postForEntity("/api/auth/login", new LoginRequest(user.getEmail(), user.getPassword()), AuthTokenResponse.class);
