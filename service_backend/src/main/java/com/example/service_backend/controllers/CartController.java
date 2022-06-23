@@ -204,7 +204,7 @@ public class CartController {
         if(order.getProducts().isEmpty())
             throw new ForbiddenOperationException("Can't order because there are no products on your cart.");
 
-        Date date = new Date();
+        Date date = Date.from(Instant.now());
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         order.setDate(date);
         order.setTotalPrice(totalPrice);
